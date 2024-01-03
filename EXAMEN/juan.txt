@@ -1,0 +1,48 @@
+El pipeline gràfic es en paraules simples, la funció o procés sequencial utilitzat per a "rendertizar" (pintar) informació gràfica en 2/3 dimensions en dispositius de visualització (pantalles)
+bidimiensionals. Aquest algoritme amb etapes ben diferenciades ha sigut essencial en la revolució del segle passat dels gràfics computacionals, que poc a poc han anat evolucionant tenint un enorme impacte
+en l'evolució dels computadors, per la revolució economica que ha causat en l'industria dels videojocs, sanitat i en l'animació cinematogràfica. Aquest mateix algorisme ha estat implementat
+en diverses API/Plataformes gràfiques com OpenGL de Grup Khronos, DirectX de Microsoft o bé Vulkan i en totes implementacions es busca explotar el paralelisme, oferir una plataforma unificada
+amb la qual els usuaris puguin crear comunitat i aixi aquesta millori amb el temps, ocultar la latencia dels moviments de memoria i oferir resultats ràpids explotant el hardware especialitzat.
+Aquestes implementacions parteixen de l'idea que algunes etapes són indispensables i per tant fixes i altres es deixen programables a disposició de l'usuari de manera intuitiva, per a poder
+adaptar la renderizació a l'aplicació/simulació o cas d'ús desitjat.
+\\
+
+La primera gran etapa (fixa) es tracta del VERTEX PULLER, on es fa les transferencies a memoria necessàries dels models i demés informació en sentit CPU -> GPU, aquí es llegeix tota la informació gràfica 
+bàsica de cada vertex que composa cada model, com la posició (vector 3d XYZ), el color (vector 4d RGBA), les coordenades de textura (vector 2d ST) i vectors normals (3d XYZ) entre altres. A continuació 
+ve una etapa programable importantíssima, el VERTEX PROCESSING/SHADER on l'usuari pot especificar quina transformació vectorial es fará a cada vertex (Normalment es fan els càlculs de totes les transformacions
+com translacions/rotacions/escalats, cambiantlos a un altre espai de coordenades i també els càlculs de la posició de la càmera i iluminació incident sobre aquests vertexs). Aquesta etapa també sol enviar 
+variables de sortida , per a cada vertex com la posició i colors finals, vectors normals transformats o les coordenades de textura, per a que la seguent etapa es pugui emprar.
+\\
+
+Seguidament passen a l'etapa de teselació, una funcionalitat que es va afegir fa pocs anys en OpenGL/DirectX per a multiplicar el nombre de vertexs dels models i així millorar la qualitat d'aquests. 
+Consta de 3 sub-etapes com Hull Shader, Tessellator i Domain Shader, els quals els shaders també són programables, però com aquests són molt recents no els considerarem com a part del pipeline tradicional.
+\\
+
+A continuació s'inicia el processament de primitives, primerament amb una funció fixa de GENERACIÓ DE PRIMITIVES, a partir de la llista de vertexs o índexos dels vertexs i la primitiva desitjada
+(Per primitiva s'entén figura bàsica com linia, triangle, cuadrat...) genera una llista de primitives i una associació entre quins vertexs van a cada primitiva. Després aquestes primitives serán 
+enviades a la etapa de funció fixa també de PROCESSAMENT DE PRIMITIVES previes a la rasterizació, com el CLIPPING (eliminació de primitives que no apareixin en el area de visió) o bé CULLING
+(Fer ús d'un buffer en la memòria de la tarjeta gràfica que guarda les components Z de cada vertex, per a poder descartar els vertexs que quedaran tapats per altres davant seu) d'entre altres possibles.
+També fa poc es va afegir una etapa programable de GEOMETRY SHADERS per que l'usuari pugui manipular també les primitives
+\\
+
+Un cop acabat el processament de primitives es passa per una etapa de funció fixa crucial, el algorisme de RASTERITZACIÓ, que converteix aquestes primitives a una matriu de píxels
+(Resolució de pantalla), aleshores el procediment decideix mitjançant la cámara i els objectes quin es el color de cada píxel i el guarda en el FRAMEBUFFER. Seguidament pasen el FRAGMENT SHADER,
+ una etapa programable , pero opcional (Ja que amb el Raster es podria considerar suficient), que donat un pixel i la seva posició i possiblement altres variables com les coordenades de textura...
+  Determina el color, la possible iluminació per fragment, el ús de textures i possibles manipulacions dels atributs profunditat i stencil (Per més profunditat sobre l'us de stencil consultar la guía de khronos).
+Aquesta etapa és costosa degut al enorme nombre de fragments que hi ha en una pantalla (Full HD es 1920x1080, del ordre $10^6$), pero com cap fragment depen del altre es completament paralelitzable.
+\\
+
+Un cop finalizat les etapes més importants, amb el FRAMEBUFFER ja llest per mostrar a pantalla, es fa un seguit d'operacions opcionals anomenades PIXEL OPERATIONS, que consten en filtres
+ o combinacions de píxels, per a aconseguir de manera eficient efectes especials si son desitjats i s'executen de manera paralela en les unitats ROP (Render Output Unit). Algunes de les operacions més importants són:
+Scissor test (Es descarten fragments en funció de l'area de renderització), Alpha Test (Es fa servir la component alfa de RGBA per descartar fragments transparents), Stencil Test (Emprant el stencil buffer, serveix per
+aplicar efectes especials com siluetes als models o ombres), Z test (Per descartar fragments que queden ocults per profunidatat, emprant el Z-Buffer com a base)...
+\\
+
+Un cop acabades les operacions es mostra el frame buffer per pantalla , resultant en l'imatge renderitzada en 2D amb tots els efectes i shaders aplicats.
+\\ 
+
+Aquest procediment ha estat estudiat durant decàdes i ha sigut objecte de nombroses optimitzacions i millores per part de la enorme comunitat i empreses que han estat darrere per inventar els gràfics 
+del demà. L'industria del cinema ha prosperat gràcies als avenços en aquest camp, empreses com Disney, Pixar, Dreamworks i les targetes gràfiques van apareixer i han seguit evolucionant de manera ultra-especifica 
+ per optimitzar aquest procediment de manera minuciosa (Unitats especialitzades pel costos ray-tracing, unitats també uniques per les Pixel Operations, Amples de banda creixents per poder apagar el coll d'ampolla que suposen 
+les transferencies de memòria, un nombre enorme de unitats de shading unificades per poder explotar el potencial paralelisme ...) i són una autèntica meravella electrònica, fruit de les millors ments, anys de esforços gegantins i
+competitivat elevada i ganes de portar la tècnologia més enllà.

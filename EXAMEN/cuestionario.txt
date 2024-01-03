@@ -1,0 +1,55 @@
+CUESTIONARIO
+Las 5 últimas cuestiones (f-j) se contestan con 1 frase, 1 punto por pregunta. Las 5 primeras (ae) requieren una explicación más elaborada, 3 puntos por pregunta.
+a) Siempre decimos que en una GPU ocultamos la latencia con memoria. ¿Puedes explicar
+cómo lo hacemos?
+b) ¿Qué significa que una GPU tenga los shaders unificados?
+c) Hablando gráficos 3D, ¿qué diferencias hay entre CLIPPING y CULLING?
+d) En la declaración de un kernel CUDA, proponemos dos alternativas:
+_global_ void Kern(int N, float *A, float *B);
+_global_ void Kern(int N, float *restricted A, float *restricted B);
+¿Qué implicaciones tiene el uso de restricted? O mejor, ¿qué implica NO usarla?
+e) Hablando de gráficos 3D, ¿qué es una textura? ¿para qué se utilizan?
+f) ¿Cuál es la tarjeta gráfica más potente hoy (12/dic/2023 – 17/ene/2024)? Indica la fecha de
+la consulta.
+g) ¿Cuál es la mejor tarjeta gráfica que te puedes comprar hoy (12/dic/2023 – 17/ene/2024)
+por 700 euros? Indica la fecha de la consulta y dónde la puedes comprar.
+h) ¿Cómo hay que declarar un vector de 256 floats dentro de un kernel de CUDA para que se
+almacene en la memoria compartida de la GPU?
+i) Enumera los elementos programables (shaders) que hay en el pipeline de direct3D 12.
+j) Pensando, en una tarjeta gráfica, explica que es el FILL RATE.
+
+
+Completa este cuestionario siguiendo las indicaciones del enunciado y argumentando las respuestas brevemente
+ChatGPT
+a) Ocultamiento de Latencia en GPUs: Las GPUs ocultan la latencia, principalmente de operaciones de memoria, mediante el uso de una gran cantidad de hilos de ejecución. Mientras un grupo de hilos espera por datos de la memoria (latencia), otros hilos pueden ejecutarse. Esto mantiene la GPU ocupada y mejora el rendimiento general al disminuir el impacto del tiempo de espera.
+
+b) Shaders Unificados en GPUs: Tener shaders unificados significa que la GPU utiliza un conjunto común de shaders que pueden realizar múltiples funciones (vertex, pixel, geometry, etc.). Esto ofrece mayor flexibilidad y eficiencia, ya que los recursos de procesamiento de la GPU se pueden asignar dinámicamente a diferentes tareas según sea necesario.
+
+c) Clipping vs. Culling en Gráficos 3D: El clipping es el proceso de cortar partes de primitivas que están fuera del campo de visión, mientras que el culling es el proceso de descartar primitivas enteras que no contribuyen al frame final. El clipping se centra en partes de primitivas y es una etapa posterior en el pipeline gráfico, mientras que el culling es más temprano y se ocupa de objetos completos.
+
+d) Uso de 'Restricted' en CUDA: Al usar 'restricted' en la declaración de un kernel CUDA, se indica al compilador que los punteros referencian áreas de memoria que no se solapan. Esto permite optimizaciones de rendimiento, ya que el compilador puede asumir que las lecturas y escrituras a través de estos punteros son independientes y pueden ser paralelizadas de manera más eficiente.
+
+e) Texturas en Gráficos 3D: Una textura en gráficos 3D es una imagen o patrón aplicado a la superficie de un objeto 3D para darle más detalle y realismo visual. Se utilizan para simular detalles finos como color, brillo, y relieve sin necesidad de incrementar la complejidad geométrica del objeto.
+
+f-j) Estas preguntas requieren información actual y específica que no está disponible en mi base de datos actual, que se encuentra actualizada hasta abril de 2023. Te recomendaría buscar fuentes recientes o herramientas de consulta actualizadas para obtener las respuestas más precisas y actualizadas para estas preguntas.
+
+User
+continua
+ChatGPT
+f) Tarjeta Gráfica más Potente (Dic 2023 - Ene 2024): No tengo acceso a información actualizada más allá de abril de 2023 para determinar cuál es la tarjeta gráfica más potente en este período. Para obtener esta información, es recomendable revisar fuentes recientes y confiables en el campo de la tecnología de hardware.
+
+g) Mejor Tarjeta Gráfica por 700 Euros (Dic 2023 - Ene 2024): Al igual que con la pregunta anterior, no dispongo de información actualizada para proporcionar una recomendación precisa. Los precios y modelos disponibles en este rango pueden variar significativamente, por lo que se sugiere consultar sitios de venta de hardware y revisiones técnicas recientes.
+
+h) Declaración de un Vector de 256 Floats en CUDA:
+
+cpp
+Copy code
+__global__ void MiKernel() {
+    __shared__ float miVector[256];
+    // Operaciones con miVector
+}
+En este código, miVector es un arreglo de 256 floats almacenado en la memoria compartida de la GPU, accesible para todos los threads dentro del mismo bloque.
+
+i) Elementos Programables en el Pipeline de Direct3D 12: Los elementos programables en Direct3D 12 incluyen Vertex Shader, Pixel Shader, Geometry Shader, Hull Shader, Domain Shader y Compute Shader. Cada uno de estos shaders desempeña un papel específico en el procesamiento y renderización de gráficos.
+
+j) FILL RATE en Tarjetas Gráficas: El FILL RATE es una medida del rendimiento de una tarjeta gráfica, específicamente su capacidad para renderizar píxeles o texels (elementos de textura). Indica cuántos píxeles o texels puede procesar la GPU por segundo, siendo un factor crucial en la determinación de su capacidad para manejar juegos y aplicaciones gráficas de alta resolución.

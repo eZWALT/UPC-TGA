@@ -1,0 +1,25 @@
+¿Cuál crees que es el fabricante de tarjetas gráficas más importante? Justifica la respuesta. A
+la vista de cómo han ido evolucionando las tarjetas. Selecciona la tarjeta que consideres más
+relevante de la historia. Justifica porqué has elegido esa tarjeta y describe sus características
+más relevantes. Es más importante la justificación que la tarjeta escogida. Describelo en 1000 palabras sin usar bullet points, sino un redactado justificando la eleccion de la grafica y porque el fabricante escogido es el indisputable mas importante del mercado
+ChatGPT
+
+Evaluar cuál es el fabricante de tarjetas gráficas más importante requiere considerar varios factores, incluyendo innovaciones tecnológicas, impacto en el mercado, y contribuciones al avance de la computación gráfica.
+NVIDIA, por ejemplo, ha sido un líder indiscutible en el campo de las tarjetas gráficas, especialmente debido a sus contribuciones significativas a la tecnología de gráficos y su dominio en el mercado de gaming y aplicaciones profesionales.
+Sus innovaciones en tecnologías como el ray tracing y la inteligencia artificial han marcado un antes y un después en la industria.
+
+En cuanto a la tarjeta gráfica más relevante de la historia, una elección destacada podría ser la GeForce 256 de NVIDIA, lanzada en 1999.
+Esta tarjeta es a menudo considerada como la primera GPU (unidad de procesamiento gráfico) del mundo, un término que NVIDIA acuñó para describir
+su capacidad de no solo renderizar gráficos, sino también de realizar cálculos complejos que anteriormente recaían en la CPU.
+La GeForce 256 introdujo importantes avances en términos de aceleración de hardware para transformación y iluminación 3D, estableciendo un nuevo estándar para los gráficos en juegos y aplicaciones profesionales.
+Este lanzamiento marcó el comienzo de una era en la que las tarjetas gráficas se convirtieron en componentes críticos para el rendimiento del sistema,
+no solo para juegos, sino también para una creciente gama de aplicaciones en campos como la simulación, el diseño asistido por computadora y la creación de contenido digital.
+
+Esta elección refleja no solo la importancia de una tarjeta gráfica específica, sino también el papel de su fabricante en la definición de la dirección y el progreso de la industria
+de gráficos en su conjunto. La influencia de NVIDIA y su GeForce 256 en la evolución de las tarjetas gráficas es innegable, marcando un hito en la historia de la computación gráfica
+y estableciendo un legado que continúa hasta hoy.
+
+
+
+
+

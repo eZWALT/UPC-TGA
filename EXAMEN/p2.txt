@@ -1,0 +1,77 @@
+2) Dada la siguiente rutina escrita en C:
+void Exa24(float mC[N][M], float mB[N][M], float vA[N]) {
+ for (int i=0; i<N; i++)
+ for (int j=0; j<M; j++)
+ mC[i][j] += mB[i][j]*vA[i] + mB[0][j]*mB[i][0];
+}
+Escribid 3 versiones de un kernel CUDA que resuelva el mismo problema:
+a) En la primera versión cada thread se va a ocupar de 1 columna de la matriz resultado.
+b) En la segunda versión cada thread se va a ocupar de 1 fila de la matriz resultado.
+c) En la última versión cada thread se va a ocupar de 1 elemento de la matriz resultado.
+Escribid los kernels CUDA para cada versión, así como la invocación correspondiente. Tened
+en cuenta que como máximo podéis utilizar 1024 threads por bloque y que las variables N y
+M pueden tener cualquier valor (p.e. N = 1237, M = 2311, suponed que N, M > 1024).
+No es necesario que escribáis las transferencias de información (CPUàGPU, GPUàCPU).
+ChatGPT
+Para resolver la rutina dada en CUDA, se pueden escribir tres versiones de kernels que manejen respectivamente una columna, una fila y un elemento individual de las matrices. Dado que N y M pueden ser mayores que 1024, es importante gestionar la cantidad de threads y bloques de forma eficiente.
+
+Kernel por Columna:
+
+Código del Kernel:
+cpp
+Copy code
+__global__ void kernelPorColumna(float *mC, float *mB, float *vA, int N, int M) {
+    int columna = blockIdx.x * blockDim.x + threadIdx.x;
+    if (columna < M) {
+        for (int i = 0; i < N; i++) {
+            int index = i * M + columna;
+            mC[index] += mB[index] * vA[i] + mB[columna] * mB[i * M];
+        }
+    }
+}
+Invocación:
+cpp
+Copy code
+dim3 blockDim(1024);
+dim3 gridDim((M + 1023) / 1024);
+kernelPorColumna<<<gridDim, blockDim>>>(mC, mB, vA, N, M);
+Kernel por Fila:
+
+Código del Kernel:
+cpp
+Copy code
+__global__ void kernelPorFila(float *mC, float *mB, float *vA, int N, int M) {
+    int fila = blockIdx.x * blockDim.x + threadIdx.x;
+    if (fila < N) {
+        for (int j = 0; j < M; j++) {
+            int index = fila * M + j;
+            mC[index] += mB[index] * vA[fila] + mB[j] * mB[fila * M];
+        }
+    }
+}
+Invocación:
+cpp
+Copy code
+dim3 blockDim(1024);
+dim3 gridDim((N + 1023) / 1024);
+kernelPorFila<<<gridDim, blockDim>>>(mC, mB, vA, N, M);
+Kernel por Elemento:
+
+Código del Kernel:
+cpp
+Copy code
+__global__ void kernelPorElemento(float *mC, float *mB, float *vA, int N, int M) {
+    int fila = blockIdx.y * blockDim.y + threadIdx.y;
+    int columna = blockIdx.x * blockDim.x + threadIdx.x;
+    if (fila < N && columna < M) {
+        int index = fila * M + columna;
+        mC[index] += mB[index] * vA[fila] + mB[columna] * mB[fila * M];
+    }
+}
+Invocación:
+cpp
+Copy code
+dim3 blockDim(32, 32); // 32x32 threads en un bloque
+dim3 gridDim((M + 31) / 32, (N + 31) / 32);
+kernelPorElemento<<<gridDim, blockDim>>>(mC, mB, vA, N, M);
+Estos kernels y su invocación están diseñados para trabajar con matrices de cualquier tamaño, ajustando el número de threads y bloques para adaptarse a los límites impuestos por CUDA y el hardware específico.

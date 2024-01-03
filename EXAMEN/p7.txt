@@ -1,0 +1,20 @@
+6) Disponemos de una tarjeta gráfica con 2 GPUs. En esta tarjeta queremos correr un juego
+interactivo 3D (que utiliza OpenGL u otra API similar). Si estuvierais diseñando el driver de la
+API gráfica, ¿cómo distribuirías el trabajo entre las 2 GPUs para maximizar el rendimiento?
+¿Qué información hay que enviar a cada tarjeta? ¿Han de sincronizarse/comunicarse las 2
+GPUs? ¿Cómo pueden hacerlo? Os ayudará tener en mente cómo funciona el pipeline gráfico
+tradicional. Redacta sin usar bullet points en no menos de 1000 palabras
+ChatGPT
+Diseñar un driver de API gráfica para una tarjeta con dos GPUs, especialmente para ejecutar juegos interactivos 3D, implica varios desafíos técnicos y decisiones de diseño clave. La meta es maximizar el rendimiento al distribuir de manera efectiva la carga de trabajo entre ambas GPUs. Esta tarea requiere un entendimiento profundo del pipeline gráfico y cómo las distintas etapas pueden beneficiarse del procesamiento paralelo.
+
+Una estrategia sería dividir las tareas de renderización entre las dos GPUs. Por ejemplo, una GPU podría manejar la geometría y la otra la rasterización y el post-procesado. Esta división permite que cada GPU se especialice en ciertas tareas, optimizando el uso de sus recursos. Sin embargo, esta estrategia requiere una coordinación cuidadosa para asegurar que la división de trabajo no cree cuellos de botella.
+
+Otra opción es la renderización alternada de frames (AFR, por sus siglas en inglés), donde cada GPU renderiza frames alternos. Esta técnica es efectiva para aumentar la tasa de frames, pero puede introducir problemas de latencia y requerir una sincronización precisa entre las GPUs para evitar artefactos visuales.
+
+La sincronización es fundamental en cualquier enfoque. Las GPUs deben estar en constante comunicación para asegurar que el trabajo se distribuya de manera equitativa y para evitar inconsistencias en la presentación de los frames. Esto se logra a través de un intercambio eficiente de datos, que puede ser desafiante dado el ancho de banda limitado y la latencia entre las GPUs.
+
+Además, es crucial gestionar la memoria de manera eficiente. Cada GPU tendrá su propio conjunto de VRAM, y el driver debe asegurarse de que los datos necesarios estén disponibles en ambas tarjetas cuando sea necesario. Esto puede incluir la duplicación de ciertos datos, como texturas y buffers de geometría, para evitar retrasos en el acceso a la memoria.
+
+Finalmente, el diseño del driver debe ser flexible y adaptable a diferentes juegos y aplicaciones. No todos los juegos se beneficiarán de la misma manera de la distribución del trabajo entre múltiples GPUs, por lo que el driver debe ser capaz de ajustar dinámicamente la estrategia de distribución de carga en función del juego específico y su uso del pipeline gráfico.
+
+En resumen, el diseño de un driver para una tarjeta gráfica con dos GPUs es un proceso complejo que requiere un equilibrio cuidadoso entre la distribución de carga de trabajo, la sincronización entre GPUs, la gestión eficiente de la memoria y la adaptabilidad a diferentes aplicaciones. La clave está en entender profundamente tanto el hardware disponible como las necesidades específicas de los juegos y aplicaciones que se ejecutarán.
