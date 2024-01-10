@@ -1,9 +1,0 @@
-) Describe el pipeline gráfico tradicional. Usando 1000 palabras, describelo sin usar bullet points, sino como una redaccion en profunidad del tema hablando con gran detalle de cada etapa del pipeline
-ChatGPT
-El pipeline gráfico tradicional es un proceso secuencial utilizado en la renderización de gráficos 3D en computadoras y consolas de videojuegos. Este proceso convierte la información geométrica tridimensional, como modelos y texturas, en imágenes bidimensionales en la pantalla. El pipeline incluye varias etapas claves, como la transformación y la iluminación de vértices, el recorte y la proyección, la rasterización, y el procesamiento de fragmentos.
-
-En la primera etapa, los vértices de los modelos 3D se transforman de su espacio local al espacio de la cámara. Aquí, también se aplican efectos de iluminación, calculando cómo la luz incide sobre estos vértices. Luego, el proceso de recorte elimina las partes de la escena que no están en el campo de visión de la cámara, y la proyección transforma la escena 3D a una representación 2D.
-
-La rasterización convierte los vértices y las primitivas en una serie de píxeles o fragmentos en el framebuffer. Durante este proceso, se determina qué píxeles de la pantalla corresponden a cada primitiva. En la etapa final, se realiza el procesamiento de fragmentos, donde se aplican efectos como texturizado, blending y pruebas de profundidad para determinar los colores y la opacidad de cada píxel en la imagen final.
-
-Cada una de estas etapas es esencial para crear la ilusión de escenas tridimensionales en una pantalla plana y ha sido objeto de optimización en las tarjetas gráficas a lo largo de los años. Las modernas GPUs implementan este pipeline de manera muy eficiente y con extensiones para soportar una variedad de efectos gráficos avanzados.

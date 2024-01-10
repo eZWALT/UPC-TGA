@@ -12,6 +12,10 @@
 \usepackage{geometry}
 \usepackage{caption}
 \usepackage{multirow}
+\usepackage{eurosym}
+\usepackage{natbib}
+
+
 
 
 
@@ -37,117 +41,248 @@
 
 \section{Pregunta 1}
 
-El pipeline gràfic es en paraules simples, la funció o procés sequencial utilitzat per a "rendertizar" (pintar) informació gràfica en 2/3 dimensions en dispositius de visualització (pantalles)
-bidimiensionals. Aquest algoritme amb etapes ben diferenciades ha sigut essencial en la revolució del segle passat dels gràfics computacionals, que poc a poc han anat evolucionant tenint un enorme impacte
-en l'evolució dels computadors, per la revolució economica que ha causat en l'industria dels videojocs, sanitat i en l'animació cinematogràfica. Aquest mateix algorisme ha estat implementat
-en diverses API/Plataformes gràfiques com OpenGL de Grup Khronos, DirectX de Microsoft o bé Vulkan i en totes implementacions es busca explotar el paralelisme, oferir una plataforma unificada
-amb la qual els usuaris puguin crear comunitat i aixi aquesta millori amb el temps, ocultar la latencia dels moviments de memoria i oferir resultats ràpids explotant el hardware especialitzat.
-Aquestes implementacions parteixen de l'idea que algunes etapes són indispensables i per tant fixes i altres es deixen programables a disposició de l'usuari de manera intuitiva, per a poder
-adaptar la renderizació a l'aplicació/simulació o cas d'ús desitjat.
+El pipeline gràfic és en paraules simples, la funció o procés seqüencial utilitzat per a "renderitzar" (pintar) informació gràfica en 2/3 dimensions en dispositius de visualització (pantalles)
+bidimensionals. Aquest algoritme amb etapes ben diferenciades ha sigut essencial en la revolució del segle passat dels gràfics computacionals, que a poc a poc han anat evolucionant tenint un enorme impacte
+en l'evolució dels computadors, per la revolució econòmica que ha causat en l'industria dels videojocs, sanitat i en l'animació cinematogràfica. Aquest mateix algorisme ha estat implementat
+en diverses API/Plataformes gràfiques com OpenGL de Grup Khronos, DirectX de Microsoft o bé Vulkan i en totes implementacions es busca explotar el paral·lelisme, oferir una plataforma unificada
+amb la qual els usuaris puguin crear comunitat i aixi aquesta millori amb el temps, ocultar la latència dels moviments de memòria i oferir resultats ràpids explotant el hardware especialitzat.
+Aquestes implementacions parteixen de la idea que algunes etapes són indispensables i per tant fixes i altres es deixen programables a disposició de l'usuari de manera intuïtiva, per a poder
+adaptar la renderització a l'aplicació/simulació o cas d'ús desitjat.
 \\
 
-La primera gran etapa (fixa) es tracta del VERTEX PULLER, on es fa les transferencies a memoria necessàries dels models i demés informació en sentit CPU -> GPU, aquí es llegeix tota la informació gràfica 
-bàsica de cada vertex que composa cada model, com la posició (vector 3d XYZ), el color (vector 4d RGBA), les coordenades de textura (vector 2d ST) i vectors normals (3d XYZ) entre altres. A continuació 
-ve una etapa programable importantíssima, el VERTEX PROCESSING/SHADER on l'usuari pot especificar quina transformació vectorial es fará a cada vertex (Normalment es fan els càlculs de totes les transformacions
-com translacions/rotacions/escalats, cambiantlos a un altre espai de coordenades i també els càlculs de la posició de la càmera i iluminació incident sobre aquests vertexs). Aquesta etapa també sol enviar 
-variables de sortida , per a cada vertex com la posició i colors finals, vectors normals transformats o les coordenades de textura, per a que la seguent etapa es pugui emprar.
+La primera gran etapa (fixa) es tracta del VERTEX PULLER, on es fa les transferències a memòria necessàries dels models i altres informació en sentit CPU -> GPU, aquí es llegeix tota la informació gràfica 
+bàsica de cada vèrtex que compon cada model, com la posició (vector 3d XYZ), el color (vector 4d RGBA), les coordenades de textura (vector 2d ST) i vectors normals (3d XYZ) entre altres. A continuació 
+ve una etapa programable importantíssima, el VERTEX PROCESSING/SHADER on l'usuari pot especificar quina transformació vectorial es farà a cada vèrtex (Normalment es fan els càlculs de totes les transformacions
+com translacions/rotacions/escalats, canviant-los a un altre espai de coordenades i també els càlculs de la posició de la càmera i il·luminació incident sobre aquests vèrtexs). Aquesta etapa també sol enviar 
+variables de sortida, per a cada vèrtex com la posició i colors finals, vectors normals transformats o les coordenades de textura, perquè la següent etapa es pugui emprar.
 \\
 
-Seguidament passen a l'etapa de teselació, una funcionalitat que es va afegir fa pocs anys en OpenGL/DirectX per a multiplicar el nombre de vertexs dels models i així millorar la qualitat d'aquests. 
-Consta de 3 sub-etapes com Hull Shader, Tessellator i Domain Shader, els quals els shaders també són programables, però com aquests són molt recents no els considerarem com a part del pipeline tradicional.
+Seguidament, passen a l'etapa de tessel·lació, una funcionalitat que es va afegir fa pocs anys en OpenGL/DirectX per a multiplicar el nombre de vèrtexs dels models i així millorar la qualitat d'aquests. 
+Consta de 3 subetapes com Hull Shader, Tessellator i Domain Shader, els quals els shaders també són programables, però com aquests són molt recents no els considerarem com a part del pipeline tradicional.
 \\
 
-A continuació s'inicia el processament de primitives, primerament amb una funció fixa de GENERACIÓ DE PRIMITIVES, a partir de la llista de vertexs o índexos dels vertexs i la primitiva desitjada
-(Per primitiva s'entén figura bàsica com linia, triangle, cuadrat...) genera una llista de primitives i una associació entre quins vertexs van a cada primitiva. Després aquestes primitives serán 
-enviades a la etapa de funció fixa també de PROCESSAMENT DE PRIMITIVES previes a la rasterizació, com el CLIPPING (eliminació de primitives que no apareixin en el area de visió) o bé CULLING
-(Fer ús d'un buffer en la memòria de la tarjeta gràfica que guarda les components Z de cada vertex, per a poder descartar els vertexs que quedaran tapats per altres davant seu) d'entre altres possibles.
-També fa poc es va afegir una etapa programable de GEOMETRY SHADERS per que l'usuari pugui manipular també les primitives
+A continuació s'inicia el processament de primitives, primerament amb una funció fixa de GENERACIÓ DE PRIMITIVES, a partir de la llista de vèrtexs o índexs dels vèrtexs i la primitiva desitjada
+(Per primitiva s'entén figura bàsica com línia, triangle, quadrat...) genera una llista de primitives i una associació entre quins vèrtexs van a cada primitiva. Després aquestes primitives serán 
+enviades a l'etapa de funció fixa també de PROCESSAMENT DE PRIMITIVES prèvies a la rasterització, com el CLIPPING (eliminació de primitives que no apareguin en l'àrea de visió) o bé CULLING
+(Fer ús d'un buffer en la memòria de la targeta gràfica que guarda les components Z de cada vèrtex, per a poder descartar els vèrtexs que quedaran tapats per altres davant seu) d'entre altres possibles.
+També fa poc es va afegir una etapa programable de GEOMETRY SHADERS perquè l'usuari pugui manipular també les primitives
 \\
 
-Un cop acabat el processament de primitives es passa per una etapa de funció fixa crucial, el algorisme de RASTERITZACIÓ, que converteix aquestes primitives a una matriu de píxels
-(Resolució de pantalla), aleshores el procediment decideix mitjançant la cámara i els objectes quin es el color de cada píxel i el guarda en el FRAMEBUFFER. Seguidament pasen el FRAGMENT SHADER,
- una etapa programable , pero opcional (Ja que amb el Raster es podria considerar suficient), que donat un pixel i la seva posició i possiblement altres variables com les coordenades de textura...
-  Determina el color, la possible iluminació per fragment, el ús de textures i possibles manipulacions dels atributs profunditat i stencil (Per més profunditat sobre l'us de stencil consultar la guía de khronos).
-Aquesta etapa és costosa degut al enorme nombre de fragments que hi ha en una pantalla (Full HD es 1920x1080, del ordre $10^6$), pero com cap fragment depen del altre es completament paralelitzable.
+Un cop acabat el processament de primitives es passa per una etapa de funció fixa crucial, l'algorisme de RASTERITZACIÓ, que converteix aquestes primitives a una matriu de píxels
+(Resolució de pantalla), aleshores el procediment decideix mitjançant la cámara i els objectes quin es el color de cada píxel i el guarda en el FRAMEBUFFER. Seguidament, passen el FRAGMENT SHADER,
+ una etapa programable, però opcional (Ja que amb el Raster es podria considerar suficient), que donat un pixel i la seva posició i possiblement altres variables com les coordenades de textura...
+  Determina el color, la possible il·luminació per fragment, l'ús de textures i possibles manipulacions dels atributs profunditat i stencil (Per més profunditat sobre l'ús de stencil consultar la guia de khronos).
+Aquesta etapa és costosa per culpa de l'enorme nombre de fragments que hi ha en una pantalla (Full HD es 1920x1080, de l'ordre $10^6$), però com cap fragment depèn de l'altre és completament paral·lelitzable.
 \\
 
-Un cop finalizat les etapes més importants, amb el FRAMEBUFFER ja llest per mostrar a pantalla, es fa un seguit d'operacions opcionals anomenades PIXEL OPERATIONS, que consten en filtres
- o combinacions de píxels, per a aconseguir de manera eficient efectes especials si son desitjats i s'executen de manera paralela en les unitats ROP (Render Output Unit). Algunes de les operacions més importants són:
-Scissor test (Es descarten fragments en funció de l'area de renderització), Alpha Test (Es fa servir la component alfa de RGBA per descartar fragments transparents), Stencil Test (Emprant el stencil buffer, serveix per
-aplicar efectes especials com siluetes als models o ombres), Z test (Per descartar fragments que queden ocults per profunidatat, emprant el Z-Buffer com a base) o Alpha Blending ().
-\\
-
-Un cop acabades les operacions es mostra el frame buffer per pantalla , resultant en l'imatge renderitzada en 2D amb tots els efectes i shaders aplicats.
+Un cop finalitzat les etapes més importants, amb el FRAMEBUFFER ja llest per mostrar a pantalla, es fa un seguit d'operacions opcionals anomenades PIXEL OPERATIONS, que consten en filtres o combinacions de píxels, per a aconseguir de manera eficient efectes especials si són desitjats i s'executen de manera paral·lela en les unitats ROP (Render Output Unit). Algunes de les operacions més importants són:
+Scissor test (Es descarten fragments en funció de l'àrea de renderització), Alpha Test (Es fa servir la component alfa de RGBA per descartar fragments transparents), Stencil Test (Emprant el stencil buffer, serveix per
+aplicar efectes especials com siluetes als models o ombres), Z test (Per descartar fragments que queden ocults per profunditat, emprant el Z-Buffer com a base) o Alpha Blending (permet combinar de manera suau els colors de dues imatges o elements gràfics superposats. Mitjançant un valor alfa (\(\alpha\)) que indica la transparència, es calcula un nou color per a cada píxel de la regió de superposició, prenent en compte els colors de la imatge superior i del fons).
+Un cop acabades les operacions es mostra el FRAME BUFFER per pantalla, resultant en la imatge renderitzada en 2D amb tots els efectes i shaders aplicats.
 \\ 
 
-Aquest procediment ha estat estudiat durant decàdes i ha sigut objecte de nombroses optimitzacions i millores per part de la enorme comunitat i empreses que han estat darrere per inventar els gràfics 
-del demà. L'industria del cinema ha prosperat gràcies als avenços en aquest camp, empreses com Disney, Pixar, Dreamworks i les targetes gràfiques van apareixer i han seguit evolucionant de manera ultra-especifica 
- per optimitzar aquest procediment de manera minuciosa (Unitats especialitzades pel costos ray-tracing, unitats també uniques per les Pixel Operations, Amples de banda creixents per poder apagar el coll d'ampolla que suposen 
-les transferencies de memòria, un nombre enorme de unitats de shading unificades per poder explotar el potencial paralelisme ...) i són una autèntica meravella electrònica, fruit de les millors ments, anys de esforços gegantins i
-competitivat elevada i ganes de portar la tècnologia més enllà.
+Aquest procediment ha estat estudiat durant dècades i ha sigut objecte de nombroses optimitzacions i millores per part de l'enorme comunitat i empreses que han estat darrere per inventar els gràfics 
+del demà. L'industria del cinema, ha prosperat gràcies als avenços en aquest camp, empreses com Disney, Pixar, Dreamworks i les targetes gràfiques van aparèixer i han continuat evolucionant de manera ultra-especifica 
+ per optimitzar aquest procediment de manera minuciosa (Unitats especialitzades pel costós ray-tracing, unitats també úniques per les Pixel Operations, Amplades de banda creixents per poder apagar el coll d'ampolla que suposen 
+les transferències de memòria, un nombre enorme d'unitats de shading unificades per poder explotar el potencial paral·lelisme ...) i són una autèntica meravella electrònica, fruit de les millors ments, anys d'esforços gegantins i
+competitiva elevada i ganes de portar la tecnologia més enllà.
+\\ 
+
+Aquesta pregunta no podria haver estat realitzada sense l'ajut de la informació extreta de la web de Gràfics de la FIB\cite{cs_upc_virtual}, la informació detallada de Grup Khronos\cite{khronos_opengl} i DirectX12\cite{microsoft_directx12} i les transparències de TGA\cite{graphics_cards_slides}
 
 \section{Pregunta 2}
 
 \section{Pregunta 3}
-El mercat de les tarjetes gràfiques sempre ha sigut un entorn molt competitiu on unes poques empreses han conseguit emportar-se tot el pastís (Degut en gran part a la seva supremacía d'inovacció) i les altres que han intentat entrar
- o bé han fracasat o bé han sigut comprades i assimilades per aquests gegants tècnologics que són NVIDIA, AMD o INTEL. La distribució dels guanys i del mercat segueix una mena de distribució zipfiana, es a dir, els primers s'ho emporten 
-gairebé tot, els segons molt, els tercers un bon tros, però de manera exponencial van reduint-se els recursos. NVIDIA és el indisputable fabricant més important a dia d'avui de tarjetes gràfiques, tant pels avenços en el món dels gràfics 
-com en els camps de la computació científica, inteligencia artificial, simulació... Ha estat pioner en la recerca i optimització d'aquets dispositius, la pipeline gràfica i la supercomputació, tal i com es pot veure en les 
+El mercat de les targetes gràfiques sempre ha sigut un entorn molt competitiu on unes poques empreses han aconseguit emportar-se tot el pastís (Degut en gran part a la seva supremacia d'innovació) i les altres que han intentat entrar
+ o bé han fracassat o bé han sigut comprades i assimilades per aquests gegants tecnològics que són NVIDIA, AMD o INTEL. La distribució dels guanys i del mercat segueix una mena de distribució zipfiana, és a dir, els primers s'ho emporten 
+gairebé tot, els segons molt, els tercers un bon tros, però de manera exponencial van reduint-se els recursos. NVIDIA és l'indisputable fabricant més important el dia d'avui de targetes gràfiques, tant pels avenços en el món dels gràfics 
+com en els camps de la computació científica, intel·ligència artificial, simulació... Ha estat pioner en la recerca i optimització d'aquests dispositius, la pipeline gràfica i la supercomputació, tal com es pot veure en les 
 unitats especialitzades de Ray-Tracing, els Tensor-cores especialitzats en la computació d'operacions matricials petites en una única operació... Cosa que l'ha diferenciat i posat per sobre en la carrera amb els seus altres 2 
-principals competidors. A més a més les optimitzacions específiques i influencia que han tingut en el món dels videojocs ha estat probablement un dels factors económics més determinants en la seva popularitat i supremacía. 
+principals competidors. A més a més, les optimitzacions específiques i influencia que han tingut el món dels videojocs i de la intel·ligència artificial ha estat probablement un dels factors econòmics més determinants en la seva popularitat i supremacia, cosa que ha fet créixer aquestes 
+indústria de la mà amb les altres dues, les quals s'han anat retroalimentant.
 \\
 
-Per demostrar que realment Nvidia és el fabricant més rellevant cal també observar les dades, si mirem les mides de les empreses i la seva facturació... 
-\\ 
-
-Pel que fa a la tarjeta gràfica més important de l'historia no és fàcil d'identificar, ja que hi han hagut diversos dispositius que han marcat un abans i un després en aquest camp. 3Dfx Voodoo va estar una de les més remarcables gràfiques
-(A pesar de que es considerava un accelerador) degut a ser la primera en implementar gràfics en 3D en el món dels jocs. També es important mencionar Hercules, una de les primeres gràfiques dels 80's que permitia visualitzar jocs senzills del estil pixel art,
-a pesar de les series limitacions que patia. Pero realment la paraula "tarjeta gràfica" va ser acunyada gràcies a una dels primers models de Nvidia, la GeForce 256. Aquesta gràfica llançada en 1999 comptaba 4 fragment shaders, Texture units i ROP's únicament i 
-compatava un amb ample de banda mai vist anteriorment de 4.8 GB/segon gràcies a la nova memòria gràfica DDR, que permitia executar les primeres versions de DirectX(7.0) i OpenGL(1.2).
+Pel que fa a la targeta gràfica més important de l'historia, no és fàcil d'identificar, ja que hi ha hagut diversos dispositius que han marcat un abans i un després en aquest camp. 3Dfx Voodoo va estar una de les més remarcables gràfiques
+(A pesar que es considerava un accelerador) a causa de ser la primera a implementar gràfics en 3D en el món dels jocs. També és important mencionar Hèrcules, una de les primeres gràfiques dels 80's que permetia visualitzar jocs senzills de l'estil píxel art,
+a pesar de les series limitacions que patia. Però realment la paraula "targeta gràfica" va ser encunyada gràcies a un dels primers models de Nvidia, la GeForce 256. Aquesta gràfica llançada en 1999 comptava 4 fragment shaders, Texture units i ROP's únicament i comptava un amb amplada de banda mai vist anteriorment de 4.8 GB/segon gràcies a la nova memòria gràfica DDR, que permetia executar les primeres versions de DirectX(7.0) i OpenGL(1.2).
 \\
 
-També es podrien destacar varis models de la saga TITAN de nvidia, una saga que va començar a partir del 2015 i que va donar varis models increíblement rellevants degut al salt de prestacions que suposaven i de les novetats tècnologiques
-que introduien al món de les gràfiques. Titan V va introduir els famosos Tensor Cores, el format de memòria HBMS
+De les gràfiques antigues també es podria destacar la GeForce 8800, ja que gràcies a aquesta es van introduir els shader unificats en forma dels Cuda Cores, a més que va ser la primera en suportar una de les versions més importants de OpenGL (3.0) i a més va introduir la coma flotant de 32 bits.
 \\
 
-Pero sense dubte algun, la 2080....
+La sèrie GTX 10, va ser una sèrie de NVIDIA molt llarga i prolifera que ha donat com a resultat un gran nombre de gràfiques encara emprades avui en dia per un enorme nombre de jugadors de videojocs, sobretot pels preus assequibles de 
+gamma mitjana, a pesar de la dura competència que va tenir amb AMD els quals volien dominar la gamma mitjana-alta, ja que NVIDIA se solia centrar en la gamma alta i descuidar la mitjana. La GTX 1080 va ser la primera a introduir-se amb arquitectura PASCAL
+emprant transistors de 16nm (Casi la meitat que l'anterior MAXWELL 28nm) i també va ser la primera a donar suport al VR i en fer servir l'arquitectura de VRAM GDDR5X. Gràcies a aquesta gràfica es va obrir les portes al gaming en 4K fins i tot, cosa que amb les targetes de l'època era difícil d'imaginar.
+\\
 
+També es podrien destacar diversos models de la saga TITAN de NVIDIA, una saga que va començar a partir del 2015 i que va donar diversos models increïblement rellevants a causa del salt de prestacions que suposaven i de les novetats tecnològiques
+que introduïen al món de les gràfiques. Titan V va introduir els famosos Tensor Cores, el format de memòria HBM2 amb un ample de bus de 4096 bits que donava amplades de banda mai vistes. Encara me'n recordo a l'institut quan es parlava
+de comprar ordinadors per peces tots desitjàvem tenir una titan, però com el pressupost no li arribava a ningú ens conformàvem amb les 1060/1050ti (Els mes pobres s'havien de comprar 1030).
+\\
 
+Però sense cap dubte, crec que la 2080 es mereix guanyar aquesta competició gràcies a totes les novetats que aquesta targeta gràfica va incorporar i també perquè aquesta va ser la primera gràfica de la 
+sèrie 20, una sèrie que va precedir la famosa sèrie 10 que va fer flotar a NVIDIA. La sèrie 20 eren les gràfiques anomenades RTX, que el seu objectiu principal era implementar l'algorisme de ray-tracing per la 
+renderització amb il·luminació global (La qual disposa d'una qualitat d'il·luminació infinitament millor comparat amb els models d'il·luminació local com Phong/Lambert) mitjançant algorismes hardware i no pas software com 
+s'havia fet fins al moment (De manera ineficient i inviable per a jocs en temps real), cosa que es va veure plasmada en el que coneixem avui dia com els nuclis RT. També, però un dels seus focus més grans va ser enfocar-se en 
+la intel·ligència artificial afegint una nombrosa quantitat de nuclis tensor-core i la creació de la tecnologia Deep Learning Super Sampling (DLSS) per millorar la qualitat d'imatges emprant aprenentatge automàtic. També va tenir altres 
+innovacions importantíssimes com la comptabilitat amb NVLink, la interfície per interconnectar varies gràfiques per a millorar rendiments de còmputs pesats de manera senzilla, però també destaca que aquesta va ser la primera a 
+implementar la VRAM GDDR6, consumint menys energia que la predecessora i duplicava quasi l'amplada de banda de l'arquitectura de memòria GDDR5. 
+\\
 
+Jo per motius nostàlgics hagués posat gtx 1060 o bé el seu arxienemic d'AMD la RX 480, ja que eren les GPU's que tothom parlava fa anys, quan vaig tenir la meva època de jugar videojocs (2016). Però mirant en retrospectiva 
+la 2080 es mereix sense cap dubte ser la més rellevant, per totes les innovacions tant de hardware com de software que incorpora, a pesar que altres gràfiques també hagin marcat un abans i després en el sector. L'explosió del gaming d'altes prestacions, l'explosió del Deep Learning i les granges de cripto-monedes han estat encapçalades per la 2080.
+
+Aquesta pregunta no podria haver estat realitzada sense l'ajut de la informació extreta de la web de Gràfics de la FIB\cite{cs_upc_virtual}, la informació detallada de Grup Khronos\cite{khronos_opengl} i DirectX12\cite{microsoft_directx12} i les transparències de TGA\cite{graphics_cards_slides}
 
 \section{Pregunta 4}
 
-\section{Pregunta 5}
+L'aliasing és un fenomen experimental caracteritzat per la pèrdua de les qualitats o fins i tot distorsió del objecte/funció o ona quan s'intenta enregistrar de manera discreta. Això és un fenomen habitual a l'intentar capturar de manera digital una ona, que te un comportament analògic: Si la velocitat de mostreig no és l'adequada aquesta es distorsionarà greument. En el món dels gràfics per computador, aquest problema es presenta quan s'intenta capturar figures corbes en una matriu discreta de colors, on  per causa de la petita mida de la matriu en comparació amb les corves registrades, s'observa el famós efecte de "dents de serra". Afortunadament, les pantalles han anat evolucionant les seves resolucions per intentar encabir un nombre més gran de píxels (a pesar que augmenti exageradament el temps de renderització) per evitar aquest efecte, però com la gran majoria de pantalles comercials no tenen les dimensions ni les capacitats, s'han elaborat diversos mètodes per evitar o rebaixar els efectes visuals del aliasing, impulsats sobretot per l'industria dels videojocs, on els 2 primers mètodes que comentaré són força emprats.
+\\ 
 
+Aquests mètodes, anomenats tècniques d'\textbf{antialiasing} (AA) que tenen l'objectiu de suavitzar, reduir o fer desaparèixer les dents de serra causades per aquest fenomen, fent servir ús de tècniques com introduir píxels a les vores de diverses tonalitats per crear transicions entre colors més suaus, traient l'abruptesa característica de l'aliasing. Però arran dels diversos mètodes, s'han d'escollir amb precaució, ja que molts d'ells són molt ineficients computacionalment i caldrà, segons les necessitats escollir un mètode o altre (Ja que hi ha mètodes que ofereixen una qualitat menor que altres però amb millors temps de renderització). A continuació s'esmenten 3 paradigmes de algorismes d'antialiasing:
+
+\begin{itemize}
+    \item 1) Algorismes tradicionals: Un dels primers mètodes, remuntant-nos als anys vuitanta es tracta del \textbf{SuperSampling AntiAliasing(SSAA)}, l'algorisme més senzill i de força bruta, que renderitza la imatge a una resolució major a la desitjada (Basant-se en el teorema de Nyquist-Shannon del mostreig), per exemple, quadruplicar el nombre de píxels i fer la mitjana del color dels 4 píxels per obtenir el color de cada píxel en la imatge final (reduïda a la resolució desitjada). SSAA pot emprar unitats quadrades: x2, x4, x9, x16 per obtenir millors resultats, ja que se suavitzen molt les vores, però a conseqüència augmentant dràsticament el nombre de píxels, augmentant per conseqüència els càlculs, l'amplada de banda necessària...
+
+    Amb el temps es va inventar el \textbf{MultiSampling AntiAliasing (MSAA)} que intenta aconseguir els mateixos resultats que l'anterior, però sense augmentar realment la resolució de la imatge, basant-se en modificar el comportament de l'algorisme de rasterització, perquè faci el mateix que el SSAA però de manera artificial en el rasteritzador, creant una geometria de x4, x9 ... sub-punts dins de cada píxel que seran emprats per determinar la mitjana del color\cite{learnopengl_antialiasing}. Això ens dona flexibilitat a l'hora d'escollir com es col·locaran els sub-punts, ja que podem col·locar-los en diversos patrons, que poden anar millor o pitjor depenent de la geometria dels nostres models a renderitzar.
+    
+    \item 2) Algorismes de Post-Processament: A diferència dels seus antecessors, aquests s'apliquen un cop generada la imatge i no pas en la renderització, fent-los menys costosos computacionalment. Un d'ells és el famosíssim (Jo es el que faig servir en els jocs normalment) \textbf{Fast ApproXimate AntiAliasing (FXAA)} creat en 2009 i propietat de NVIDIA. Que dona un resultat potser no tan bo com el SSAA però de manera aproximada i molt més eficient, detectant les transicions brusques entre colors i no pas multiplicar cada píxel per 4. La gran idea darrere de FXAA és aplicar MSAA però només en píxels propers en vores (Detectant les vores quan hi ha transicions brusques de color).
+
+    Més tard van aparèixer el \textbf{MorphoLogical AntiAliasing (MLAA)} (2010), que de manera similar a FXAA però d'AMD, busca les vores basant-se en patrons morfològics en cada píxel per individual, en comptes d'analitzar la geometria de l'escena. És més costós, però ofereix millors resultats que FXAA i va en la mateixa línia de buscar la  eficiencia computacional. Amb el temps va sortir el seu predecessor millorat SubMorphoLogical AA (SMAA) que millora la detecció de patrons de voreres evitant falsos positius (Que provoquen distorsió (blur) de l'imatge en zones on no hi hauria d'haver). Finalment, cal mencionar el temporal AA (TAA) breument, que es basa en la combinació de múltiples fotogrames de manera intel·ligent per evitar l'aliasing.
+
+    \item 3) Algorismes basats en IA: En l'adveniment de la intel·ligència artificial, s'han investigat diverses maneres de solucionar el problema de l'aliàsing mitjançant Aprenentatge automàtic. Els pioners en aquesta innovadora tecnologia són NVIDIA amb el seu famós DLSS\cite{nvidia_dlss} (Deep learning Super Sampling), on mitjançant una xarxa neuronal preentrenada per NVIDIA amb una barbaritat d'hores de gameplay real perquè aquesta sigui capaç de, mitjançant imatges de baixa resolució, omplir els forats per aconseguir una imatge de major resolució (Per exemple generar imatges Full HD 1080 i amb el model ampliar-les a 4K), aplicant una mena de "SuperSampling". Aquest model s'empra després de la renderització de la imatge de manera que redueix o bé quasi no impacta el rendiment aconseguint boníssims resultats, però amb la possibilitat que la qualitat de la imatge es vegi compromesa, ja que realment s'estan generant artificialment i poden causar efectes visuals per manca de la informació generada quan no es precisa. Un altre punt feble és que de moment aquesta tecnologia només la fàbrica NVIDIA, fent ús del tensor-cores , els quals només es troben en les targetes més cares i noves i a més a més perquè es pugui emprar DLSS a aplicacions o videojocs, aquest ha de ser integrat específicament. Això obre un altre via per atacar el problema de l'aliàsing, que probablement en un futur pròxim altres fabricants com AMD s'uniran a inventar les seves pròpies versions fins i tot millorades, ja que a poc a poc cada cop l'antialiàsing era un tòpic menys investigat per la indústria, potser per una sensació del problema “Ja està solucionat".
+\end{itemize} 
+
+
+Aquesta pregunta ha estat contrastada gràcies a fonts d'informació externes com TGA\cite{graphics_cards_slides}, G\cite{cs_upc_virtual}, MSAA \cite{msaa_overview} i comparacions entre AA\cite{anti_aliasing_digitaltrends}.
+
+\section{Pregunta 5}
+Triar una targeta gràfica adaptada a les necessitats de cadascú pot ser un infern, tenint en compte els preus i l'oferta enorme de gràfiques que existeix (No tanta com en el passat a causa de la gran demanda i crisis dels semiconductors,
+però és gegant igualment). A més a més, cal tenir molt clar l'objectiu que tindrà la gràfica (Gaming, Entrenar models IA, Supercomputació, Cripto-minera), ja que aleshores potser certes gràfiques estan optimitzades per certs propòsits i en consum energètic. Per intentar fer la llista el més generalista possible i no donar més importància a uns elements que altres (Com el Tensor Cores) caldrà fer l'assumpció inicial que l'usuari objectiu fa servir tant el pipeline gràfic (Juga molts videojocs), com les funcionalitats de còmput (Ha de fer treballs de TGA en local i quan s'avorreix entrena models d'aprenentatge automàtics enormes)   D'entre les especificacions tècniques de les targetes gràfiques, recomanem donar importància i fer un cop d'ull, en l'ordre següent (De més a menys important): 
+\\
+
+\begin{itemize}
+
+    \item \underline{Arquitectura GPU (Família)}: Tant l'arquitectura específica de les gràfiques com la tecnologia dels transistors (Mida en nanòmetres), són crítics pel rendiment de la gràfica, ja que evidentment contra més transistors puguis posar dins la gràfica més potent serà, ja que tindrà més nuclis, millors organitzats, amb més capacitat d'optimitzacions i més eficients energèticament. És evident triar una família nova i de gamma alta donarà bons resultats quasi sense pensar en cap altra especificació, ja que aquesta especificació n'agrupa moltes.
+    
+	\item  \underline{Nombre de Nuclis/Cores}: El nombre de processadors amb els quals compti és crucial pel rendiment de codis extremadament paral·lels com el pipeline gràfic. Contra major sigui el nombre d'aquests processadors, més potència de còmput tindrà la gràfica, ja que més processos podrà executar simultàniament.
+
+    \item \underline{Freqüència de Rellotge dels Nuclis}:  La freqüència de rellotge és inversament proporcional amb el temps de cicle d'una instrucció d'aquests, contra més alt sigui millor, ja que més ràpid s'executaran i més instruccions s'executaran en un mateix interval de temps. L'únic que ens frena d'accelerar la freqüència infinitament és el consum i la generació de calor. També s'engloba la important freqüència de pic (Boost) que pot arribar quan s'exigeix molt del dispositiu.
+
+
+    \item \underline{Arquitectura de la memòria VRAM}: L'arquitectura és un dels 3 factors que contribueix a l'amplada de banda, essent el més rellevant, ja que contra més nova sigui la tecnologia emprada (Per exemple GDDR6 és el doble de ràpida que GDDR5), més ràpida serà i més eficient energèticament serà, aleshores per molta memòria o freqüència que tinguin les generacions anteriors, difícilment superen a les predecessores.
+:
+
+    \item \underline{Quantitat de memòria VRAM}: La quantitat de memòria és molt rellevant, ja que una manca d'aquesta no es pot solucionar de cap manera. Per grans programes de còmput o escenes pesades i exigents de videojocs o simulacions cal tenir força memòria VRAM. La manca d'aquesta causarà problemes de rendiment exagerats o bé l'obligació de reducció de qualitat dels jocs/simulacions (Per programes de còmput no es podran executar sinó disposen de memòria suficient).
+
+    \item \underline{Presència i Quantitat de Nuclis Tensor/RayTracing}: Els nuclis especialitzats de Ray-Tracing i Tensor, a pesar de ser prescindibles i molt innovadors, són un salt tecnològic tant en la part gràfica com de computació. Amb els nuclis de Ray-Tracing la qualitat dels gràfics millora exageradament degut a la il·luminació global, sense consumir tant com ho farien nuclis CUDA normals. Els nuclis Tensor ens donen també la possibilitat d'accelerar estúpidament els nostres càlculs tant en simulacions com entrenament de models d'intel·ligència artificial, manipulació de dades i altres procediments que emprin operacions matricials. Amb aquests 2 components integrats la gràfica esta a un altre nivell tecnològicament parlant.
+
+    \item \underline{Nombre de nuclis ROP/TMU}: El nombre de nuclis especialitzats en Operacions de píxel (Stencil, Scissor, Depth, Alpha Blending i altres operacions en el frame buffer) és crucial per accelerar el rendiment de la renderització, el que permetrà fer ús de les funcionalitats gràfiques més ràpidament degut a un augment en el paral·lelisme (Ja que les operacions de píxel són completament paral·leles) i permetrà executar programes exigents en temps més raonable.
+
+    \item \underline{Freqüència de Rellotge de la memòria}: De manera similar a la freqüència dels nuclis, a més alta freqüència, menor serà el temps de cicle de les transferències amb el petit inconvenient del consum i la generació de calor. És important, però molt menys que l'arquitectura com ja s'ha comentat, ja que una GDDR6X amb 1 GHz seria superior pel que fa a amplada de banda que GDDR5 amb 4GHz per exemple. Però de totes maneres aquest factor contribueix a l'amplada de banda i per conseqüència al rendiment.
+
+    \item \underline{Consum i Dissipació de calor}: A pesar d'aconseguir el rendiment que volem, és indispensable tenir en compte el consum de la gràfica, ja que a més alt sigui més calor generarà i més ràpid s'espatllarà el dispositiu (A part de ser més cara la factura de la llum). Aleshores el consum s'ha de mirar de la mà amb el sistema de dissipació que porti integrat la gràfica, sigui per aire o líquid.
+
+    \item \underline{Suport API's i Programari}: Normalment, aquest factor és el menys important, ja que la majoria de les gràfiques modernes solen donar suport a totes les API's gràfiques i de còmput modernes, ja que estan creades expressament per això, però si ens interessa alguna nova versió de Vulkan, DirectX, CUDA, OpenGL, OpenCL, WebGL... Haurem de tenir cura a l'hora d'escollir 
+ 
+\end{itemize}
+
+Per entendre aquesta llista cal entendre que la resposta s'ha enfocat de tal manera que em baso únicament en les especificacions físiques, ja que si ens basem en rendiments i benchmarks aleshores la resposta és evident i trivial. És evident que cal escollir les gràfiques amb majors amplades de banda, majors rendiments teòrics de còmput i de Pixel/Texel fill rate, però per Això he categoritzat els factors concrets de la gràfica que no depenen d'experiments ni benchmarks per poder comparar entre gràfiques. També és evident que a l'hora de comprar una gràfica no només ens podem basar en les especificacions pures, caldria veure aquests resultats i veure com rendeix de manera experimental. També cal entendre que sempre es poden fer assumpcions de l'estil: La quantitat de VRAM és més important que la freqüència perquè si no hi hagués, res es podria executar. Evidentment, assumim un baseline, que hi haurà un mínim de components mediocres per a poder fer la comparació. La conclusió lògica a la qual arribem és que la família és molt rellevant, ja que engloba molts factors crucials com la mida dels transistors, les noves tecnologies tant de memòria com optimitzacions i sobretot l'actualitat, famílies més velles poc tenen a fer contra les noves, fins i tot comparant famílies velles de gamma alta contra noves de gamma baixa, a causa del creixement exponencial en molts factors que componen aquests dispositius. Un cop situada una família actual, n'hi ha prou amb comparar les principals característiques esmentades en aquesta llista, de manera heurística, per triat la targeta ideal a les nostres necessitats. 
+\\ 
+
+Aquesta resposta ha estat elaborada per la meva intuïció i raonament, contrastant amb varis recursos que he trobat en linea \cite{binarytides_graphics_card_specs}\cite{logical_increments_gpu_specs}.
 
 \section{Pregunta Doble: Tensor Cores}
+
+\subsection{Introducció i Motivació}
+Fa aproximadament 5 anys, NVIDIA va anunciar al mercat una nova familia que revolucionaria la historia de NVIDIA: Volta. Aquesta familia comptava amb enormes targetes gràfiques com la titan V , la TESLA GV100 o la TESLA V100 que excedien les capacitats dels seus predecessors i incorporaven una gran novetat, 
+els nuclis tensorials, que han marcat un abans i un després en la computació paral·lela. Es va pensar originalment per tal d'accelerar les operacions tensorials, específicament les multiplicacions de matrius, ja que aquestes operacions són la base de molts programes científics, simulacions 
+i sobretot manipulació de dades relacionals i entrenament/inferencia en models d'aprenentatge automàtic com les xarxes neuronals (Están a tots llocs, les matrius són fonamentals). 
+\\
+
+\subsection{Anàlisi Volta}
+Primerament, cal tenir una mica de context de l'arquitectura de la familia VOLTA, la qual va introduir aquests nuclis tensorials. Si agafem per exemple la targeta GV100, que va ser un dels monstres que comptava amb tensor cores, podem observar que s'organitzen a nivell de Streaming Multiprocessor (SM), cada SM es divideix en 4 
+subconjunts de WARPS que comptem amb els seus 16K registres, el seu warp scheduler, la cache d'instruccions de nivell 0 i un warp de 16/16/8 Nuclis CUDA de floats/enters/doubles. Però a més a més podem trobar a cada WARP un parell de nuclis tensorials, d'una mida de 16 * 4 (64) sub-nuclis, això es el que permet que cada tensor-core sigui 
+capaç de realitzar 64 operacions complexes (S'expliquen a continuació) de coma flotant per cicle. Aleshores cada SM comptava amb 8 nuclis tensorials i  un total de 84*8=672 nuclis en total, permetent uns speed-ups tan esbojarrats com x12/x16
+
+\subsection{Funcionalitat}
+Els nuclis tensorials (tensor cores) són nuclis altament paral·lels programables altament especialitzats en una operació: \textbf{Multiplicació de matrius i acumulació (MMA)(D = A * B + C)} de nombres de coma flotant/enters amb precisió mixta i nombres de coma flotant/enters de baixa precisió 8/16 bits. Aquest és un dels motius que permet als nuclis tensorials fer tantes operacions a
+diferencia dels nuclis CUDA normals, que es centren en nombres de coma flotant de 32 o 64 bits (Els estàndar IEEE-754). La multiplicació es realitza en nombres flotants o enters de llargada reduida (FP16, FP8, INT8, INT4...) i la suma i acumulació són realitzades amb nombres més grossos com FP32/64 i així aconseguim millorar el rendiment enormement sense sacrificar apenes qualitat. 
+Com comentaré en la secció seguent, el suport de dimensions i mides que donen els nuclis tensorials ha anat evolucionant al llarg del temps i les diverses generacions que ha fet NVIDIA.
+\\
+
+Un altre punt clau dels nuclis tensorials es tracta de la seva arquitectura, ja que que consta de molts nuclis petits que realitzen operacions de manera extremadament paral·lela i comptem amb hardware especific també (Per poder fer les operacions \textbf{Flotating Matrix Accumulation (FMA) (a = a * b + c) } en un sol cicle) , per aquest mateix motiu poden executar 64 operacions FMA 
+en un sol cicle de rellotge en la primera generació de nuclis tensorials, on compta cadascún amb 64 sub-nuclis.
+
+\subsection{Evolució i generacions}
+
+\subsection{Programar tensor cores}
+
+
+
+
+%Motivación de la salida de los tensor cores
+%SM de Volta cómo están puestos
+%Cómo funcionan en Volta
+%Cómo programarlos
+%Diferentes generaciones
+
 
 \section{Questionari}
 
 \subsection{a}
+Ocultar la latència es refereix a mitjançant, o bé el particionament del problema en sub-problemes i les transferències de memòria asíncrones o bé gràcies al repartiment de diverses tasques, ja que uns threads es poden dedicar a les transferències mentre altres van executant en paral·lel, evitant quedar bloquejats esperant.\cite{graphics_cards_slides}
 
 \subsection{b}
+Una GPU amb shaders unificats no té nuclis de fragments ni nuclis de vèrtex, té nuclis comuns no especialitzats capaços d'executar qualsevol mena de shading (vertex, fragment, geometry) que s'assignen. Això es fa per motius d'eficiència de fabricació i per optimitzar el pipeline, ja que es poden assignar de manera dinàmica i elàstica depenent dels recursos necessaris.\cite{wikipedia_unified_shader_model}
 
 \subsection{c}
 
+El Culling es basa a eliminar les primitives que quedin ocultes per darrere d'altres primitives, emprant el DepthBuffer i basant-se en la profunditat i és anterior al clipping, el qual es basa en també eliminar/substituir primitives, però només si aquestes queden fora del camp de visió basant-se en la geometria de la càmera i escena, però creant noves primitives si cal perquè la visualització de l'escena tingui sentit (No faci desaparèixer geometria que sí que s'hauria de veure).
+\cite{cgs_exchange_clipping_culling}\cite{tutorialspoint_clipping_culling}
+
 \subsection{d}
+
+Restricted és un keyword de C per l'ús de punters que fan servir àrees de memòria que mai s'encavalquen (Suposadament). Aleshores com es pot assumir que els valors dels bytes apuntats són els mateixos en cada accés (Cap altre punter ha canviat el valor), el compilador pot fer optimitzacions i evitar-se redundància de seguretat. Si no estigués el keyword, el compilador hauria d'assegurar-se que els valors accedits són els que s'esperen, afegint instruccions, redundància i temps d'execució. En el pseudo-assemblador següent es pot veure la diferència (Suposant que 2 punters A,B volen fer store del valor de C\cite{cpp_reference_restrict}:
+
+\begin{figure}[h]
+    \centering
+    \begin{tabular}{cc}
+        \hline
+        Sense RESTRICT & Amb RESTRICT \\
+        \hline
+        loadi r1, 420 & loadi r1, 420\\
+        store r1, A[0] & store r1, A[0] \\
+        load r1, 420 & store r1, B[0] \\
+        store r1, B[0] & \\
+        \hline
+    \end{tabular}
+    \caption{Comparació simple (Cal tornar a carregar C[0] perquè el podria haver canviat un altre punter)}
+    \label{tab:mytable}
+\end{figure}
 
 \subsection{e}
 
+Una textura és una imatge o bé un patró aplicat a la superfície d'un objecte 2D/3D per tal de donar-li més detalls i realisme sense haver d'incrementar enormement el realisme tant de superfície (Més vèrtexs) com d'il·luminació (Emprar Ray-Tracing o il·luminació global amb gran nombre de rebots i detalls) (Ambdós exageradament costosos). Amb les textures podem aconseguir detalls fins com colors, brillantors i reflexions, relleus, ombres, efectes animats, geometria complexa ... amb un cost ínfim en comparació (A sobre les gràfiques compten amb hardware especialitzat i optimitzat per textures com els núclis TMU).\cite{graphics_cards_slides}
+
 \subsection{f}
+Segons el famós benchmark 3Dmark, la Nvidia RTX 4090 (36K), guanyant a la AMD Radeon RX 7900 XTX (30K) (Sense tenir en compte acceleradors ni servidors).\cite{3dmark_benchmarks} \cite{pcworld_best_graphics_cards}
 
 \subsection{g}
+Avui en dia (6 gener del 2024), per 700\euro\ o menys, el millor que pots aconseguir és una RTX 4070 (Founders Edition).\cite{nvidia_rtx_4070} \cite{pcworld_best_graphics_cards}
 
 \subsection{h}
+És declara dins d'un kernel: \_\_shared\_\_ float vector\_de\_suspesos[256]; \cite{nvidia_cuda_c_guide}
 
 \subsection{i}
+DirectX12 té 2 pipelines, el gràfic que conté: Vertex/Pixel/Geometry/Hull/Domain Shaders. El pipeline de computació hi ha el Compute Shader.\cite{microsoft_directx12}
 
 \subsection{j}
+El Fill Rate és una mesura de quants texels (unitat mínima de textura) un processador o gràfica por processar per unitat de temps (habitualment segons).\cite{graphics_cards_slides}
 
 
-
-
-
+\bibliographystyle{plain} % We choose the "plain" reference style
+\bibliography{refs} % Entries are in the refs.bib file
 
 
 
